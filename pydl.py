@@ -118,83 +118,103 @@ def download_youtube():
 
 
 
+# LANCEMENT DE L'APPLICATION
+
 app = customtkinter.CTk()
 app.title("PYDL")
-app.geometry("1000x500")
+app.geometry("1500x500")
 
 
-# Download Directory Section
-dosTel_label = customtkinter.CTkLabel(app, text="Dossier de téléchargement:")
-dosTel_label.grid(row=0, column=0, padx=10, pady=(20, 10))
-dosTel_button = customtkinter.CTkButton(app, text="Choisir Dossier", command=lambda: choose_directory())
-dosTel_button.grid(row=0, column=1, padx=10, pady=(20, 10))
-dosTel_entry = tkinter.Entry(app, width=50)
-dosTel_entry.grid(row=0, column=2, padx=10, pady=(20, 10))
+# SECTION CHARGEMENT DOSSIER
+
+dossier_frame = customtkinter.CTkFrame(app)
+dossier_frame.pack(fill=customtkinter.X, padx=10, pady=(20, 10))
 
 
+welcome_label = customtkinter.CTkLabel(dossier_frame, text="Bonjour, avant de commencer à télécharger, sélectionnez le dossier où mettre les résultats")
+welcome_label.pack(pady=(20,10))
 
-# --- YouTube Section ---
-youtube_label = customtkinter.CTkLabel(app, text="Lien Youtube:")
-youtube_label.grid(row=1, column=0, padx=10, pady=(10, 10))
 
-# Download Button
-download_button = customtkinter.CTkButton(app, text="Télécharger", command=download_youtube)
-download_button.grid(row=1, column=2, padx=10, pady=(30, 30))
+dosTel_label = customtkinter.CTkLabel(dossier_frame, text="Dossier de téléchargement:")
+dosTel_label.pack(pady=(20, 10))
+dosTel_button = customtkinter.CTkButton(dossier_frame, text="Choisir Dossier", command=lambda: choose_directory())
+dosTel_button.pack(pady=(20, 10))
+dosTel_entry = tkinter.Entry(dossier_frame, width=50)
+dosTel_entry.pack(pady=(20, 10))
 
-youtube_link_entry = tkinter.Entry(app, width=50)
-youtube_link_entry.grid(row=1, column=1, padx=10, pady=(10, 10))
 
-# Options pour le format et la qualité
+main_frame = customtkinter.CTkFrame(app)
+main_frame.pack(pady=20)
+
+
+# SECTION YOUTUBE
 
 formats = ["mp4", "mp3"]
 qualites = ["1080p", "720p", "480p"]
 
-# Variables pour stocker les choix
-
-format_var = customtkinter.StringVar(value="mp4")  # set initial value
+format_var = customtkinter.StringVar(value="mp4")
 qualite_var = customtkinter.StringVar(value="1080p")
 
-format_label = customtkinter.CTkLabel(app, text="Format:")
-format_label.grid(row=2, column=0, padx=10, pady=(10, 10))
 
-quality_label = customtkinter.CTkLabel(app, text="Qualité:")
-quality_label.grid(row=3, column=0, padx=10, pady=(10, 10))
+youtube_frame = customtkinter.CTkFrame(main_frame)
+youtube_frame.grid(row=0, column=0, padx=10, pady=10)
 
-# Combobox pour le format
-format_combobox = customtkinter.CTkComboBox(master=app, values=formats, variable=format_var)
-format_combobox.grid(row=2, column=1)
+# Lien YouTube
+youtube_label = customtkinter.CTkLabel(youtube_frame, text="Lien Youtube:")
+youtube_label.grid(row=0, column=0, padx=(10, 5), pady=(10, 10))
 
-# Combobox pour la qualité
-quality_combobox = customtkinter.CTkComboBox(app, values=qualites, variable=qualite_var)
-quality_combobox.grid(row=3, column=1)
+youtube_link_entry = tkinter.Entry(youtube_frame, width=50)
+youtube_link_entry.grid(row=0, column=1, padx=(5, 10), pady=(10, 10))
+
+# Format et Qualité
+format_label = customtkinter.CTkLabel(youtube_frame, text="Format:")
+format_label.grid(row=1, column=0, padx=(10, 5), pady=10)
+
+format_combobox = customtkinter.CTkComboBox(master=youtube_frame, values=formats, variable=format_var)
+format_combobox.grid(row=1, column=1, padx=(5, 10), pady=10)
+
+quality_label = customtkinter.CTkLabel(youtube_frame, text="Qualité:")
+quality_label.grid(row=2, column=0, padx=(10, 5), pady=10)
+
+quality_combobox = customtkinter.CTkComboBox(youtube_frame, values=qualites, variable=qualite_var)
+quality_combobox.grid(row=2, column=1, padx=(5, 10), pady=10)
+
+# Bouton de téléchargement
+download_button = customtkinter.CTkButton(youtube_frame, text="Télécharger", command=download_youtube)
+download_button.grid(row=3, columnspan=2, pady=(30, 30))
+
+# SECTION CONVERSION MP4 EN MP3
 
 
+converter_frame = customtkinter.CTkFrame(main_frame)
+converter_frame.grid(row=0, column=1, padx=10, pady=10)
 
-# --- MP4 to MP3 Section ---
-# Choose MP3 File Section
-mp4_label = customtkinter.CTkLabel(app, text="Fichier MP4 :")
-mp4_label.grid(row=4, column=0, padx=10, pady=(20, 10))
+mp4_label = customtkinter.CTkLabel(converter_frame, text="Convertisseur MP4 en MP3 :")
+mp4_label.grid(row=0, column=1, padx=5, pady=(20, 10))
 
-mp4_button = customtkinter.CTkButton(app, text="Choisir MP4", command=choose_mp4_file)
-mp4_button.grid(row=4, column=1, padx=10, pady=(20, 10))
+mp4_button = customtkinter.CTkButton(converter_frame, text="Choisir MP4", command=choose_mp4_file)
+mp4_button.grid(row=1, column=1, padx=10, pady=(20, 10))
 
-mp4_entry = tkinter.Entry(app, width=50)
-mp4_entry.grid(row=4, column=2, padx=10, pady=(20, 10))
+mp4_entry = tkinter.Entry(converter_frame, width=50)
+mp4_entry.grid(row= 1, column=2, padx=10, pady=(20, 10))
 
-convert_button = customtkinter.CTkButton(app, text="Convertir MP4 en MP3", command=mp4_to_mp3)
-convert_button.grid(row=4, column=3, padx=10, pady=(20, 10))
+convert_button = customtkinter.CTkButton(converter_frame, text="Convertir MP4 en MP3", command=mp4_to_mp3)
+convert_button.grid(row=2, column=1, padx=10, pady=(20, 10))
 
 
+# SECTION INSTAGRAM REEL
 
-# --- Instagram Reel Section ---
-insta_label = customtkinter.CTkLabel(app, text="Lien Instagram Reel:")
-insta_label.grid(row=5, column=0, padx=10, pady=(20, 10))
+instagram_frame = customtkinter.CTkFrame(main_frame)
+instagram_frame.grid(row=0, column=2, padx=10, pady=10)
 
-insta_link_entry = tkinter.Entry(app, width=50)
-insta_link_entry.grid(row=5, column=1, padx=10, pady=(20, 10))
+insta_label = customtkinter.CTkLabel(instagram_frame, text="Lien Instagram Reel:")
+insta_label.grid(row=0, column=0, padx=10, pady=(20, 10))
 
-insta_button = customtkinter.CTkButton(app, text="Télécharger Reel Insta", command=lambda: downloadInsta(insta_link_entry.get()))
-insta_button.grid(row=5, column=2, padx=10, pady=(20, 10))
+insta_link_entry = tkinter.Entry(instagram_frame, width=50)
+insta_link_entry.grid(row=1, column=0, padx=10, pady=(20, 10))
+
+insta_button = customtkinter.CTkButton(instagram_frame, text="Télécharger Reel Insta", command=lambda: downloadInsta(insta_link_entry.get()))
+insta_button.grid(row=2, column=0, padx=10, pady=(20, 10))
 
 
 app.mainloop()
