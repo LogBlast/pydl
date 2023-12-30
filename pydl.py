@@ -1,24 +1,38 @@
-import os
-import subprocess
+import time
 import tkinter
 from tkinter import filedialog, messagebox
 
-from moviepy.editor import *
-from instascrape import Reel
-import time
 import customtkinter
-
+from instascrape import Reel
+from moviepy.editor import *
 from pytube import YouTube
+
 
 def extraction_nom_fichier(path):
     """Extracts the name of the file from the path."""
     return os.path.splitext(os.path.basename(path))[0]
 
-def mp4_to_mp3(path):
+def mp4_to_mp3():
     """Converts an mp4 file to an mp3 file."""
-    video = VideoFileClip(path)
-    nom = extraction_nom_fichier(path) + ".mp3"
-    video.audio.write_audiofile(nom)
+
+    # Récupère le chemin du fichier mp4 depuis le label
+    file_path = mp4_entry.get()
+
+    # Récupère le chemin du dossier de téléchargement
+    output_directory = dosTel_entry.get()
+
+    # Créer le chemin complet pour le fichier de sortie mp3
+    nom = extraction_nom_fichier(file_path) + ".mp3"  # Nom du fichier MP3
+    audio_path = os.path.join(output_directory, nom)
+
+    # Charger le clip vidéo
+    video = VideoFileClip(file_path)
+
+    # Écrire l'audio dans un fichier MP3
+    video.audio.write_audiofile(audio_path)
+
+    messagebox.showinfo("Status", "Conversion completed successfully.")
+
 
 
 def create_header():
@@ -53,10 +67,12 @@ def downloadInsta(link):
         messagebox.showerror("Error", "Something went wrong. Please try again later.")
 
 
-def choose_file():
-    file_path = filedialog.askopenfilename()
+def choose_mp4_file():
+    file_path = filedialog.askopenfilename(filetypes=[("MP4 files", "*.mp4")])
     if file_path:
-        mp4_to_mp3(file_path)
+        mp4_entry.delete(0, tkinter.END)  # Clear the current content
+        mp4_entry.insert(0, file_path)  # Insert the new file path in the Entry
+
 
 def choose_directory():
     """Choose the directory where the video will be downloaded."""
@@ -83,7 +99,6 @@ def download_youtube():
 
 
     if format_var == "mp4":
-        resolution = yt.streams.filter(adaptive=true)
         video_stream = yt.streams.filter(resolution=qualite_var).first()
         if video_stream:
             video_stream.download(directory_path)
@@ -155,15 +170,31 @@ quality_combobox.grid(row=3, column=1)
 
 
 
+# --- MP4 to MP3 Section ---
+# Choose MP3 File Section
+mp4_label = customtkinter.CTkLabel(app, text="Fichier MP4 :")
+mp4_label.grid(row=4, column=0, padx=10, pady=(20, 10))
+
+mp4_button = customtkinter.CTkButton(app, text="Choisir MP4", command=choose_mp4_file)
+mp4_button.grid(row=4, column=1, padx=10, pady=(20, 10))
+
+mp4_entry = tkinter.Entry(app, width=50)
+mp4_entry.grid(row=4, column=2, padx=10, pady=(20, 10))
+
+convert_button = customtkinter.CTkButton(app, text="Convertir MP4 en MP3", command=mp4_to_mp3)
+convert_button.grid(row=4, column=3, padx=10, pady=(20, 10))
+
+
+
 # --- Instagram Reel Section ---
 insta_label = customtkinter.CTkLabel(app, text="Lien Instagram Reel:")
-insta_label.grid(row=4, column=0, padx=10, pady=(20, 10))
+insta_label.grid(row=5, column=0, padx=10, pady=(20, 10))
 
 insta_link_entry = tkinter.Entry(app, width=50)
-insta_link_entry.grid(row=4, column=1, padx=10, pady=(20, 10))
+insta_link_entry.grid(row=5, column=1, padx=10, pady=(20, 10))
 
 insta_button = customtkinter.CTkButton(app, text="Télécharger Reel Insta", command=lambda: downloadInsta(insta_link_entry.get()))
-insta_button.grid(row=4, column=2, padx=10, pady=(20, 10))
+insta_button.grid(row=5, column=2, padx=10, pady=(20, 10))
 
 
 app.mainloop()
